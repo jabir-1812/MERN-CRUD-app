@@ -1,31 +1,23 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
+import Index from "./pages/Index";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 
 export default function App() {
 
-  return (
-    <BrowserRouter>
+    return (
+        <BrowserRouter>
 
-      <Routes>
-        <Route path='/' element = {<Home/>} /> 
+            <Routes>
+                <Route index path='/' element={<Index />} />
 
-        <Route path="/user/register" element={<Register />} />
+                <Route path="/user/register" element={<Register />} />
 
-        <Route path="/user/login" element={<Login />} />
+                <Route path="/user/login" element={<Login />} />
 
-      </Routes>
+            </Routes>
 
-    </BrowserRouter>
-  );
-}
-
-function Home(){
-    return(
-        <>
-        <h1>Home Page</h1>
-        <Link to="/user/register">Register</Link>
-        </>
-    )
+        </BrowserRouter>
+    );
 }
