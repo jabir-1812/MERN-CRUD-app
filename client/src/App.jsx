@@ -8,16 +8,11 @@ export default function App() {
 
     return (
         <BrowserRouter>
-
             <Routes>
                 <Route index path='/' element={<Index />} />
-
                 <Route path="/user/register" element={<Register />} />
-
                 <Route path="/user/login" element={<Login />} />
-
             </Routes>
-
         </BrowserRouter>
     );
 }
