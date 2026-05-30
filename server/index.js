@@ -1,4 +1,5 @@
 import express from 'express';
+import "dotenv/config";
 import mongoose from 'mongoose';
 import cors from "cors";
 
@@ -9,7 +10,7 @@ import adminRoutes from './routes/adminRoutes.js';
 
 const app = express();
 
-mongoose.connect("mongodb://127.0.0.1:27017/myapp")
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log("MongoDB Connected");
   })
@@ -20,12 +21,15 @@ mongoose.connect("mongodb://127.0.0.1:27017/myapp")
 
 app.use(cors());
 app.use(express.json());
+app.get('/', (req, res)=>{
+    res.send("server is running....")
+})
 
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 
 
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+app.listen(process.env.PORT, () => {
+  console.log(`Server running on http://localhost:${process.env.PORT}`);
 });
