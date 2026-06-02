@@ -167,3 +167,23 @@ export const refreshToken = async (req, res) => {
     }
 };
 
+
+
+export const logoutUser = async (req, res) => {
+    try {
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+        });
+
+        return res.status(STATUS_CODES.OK).json({
+            message: "Logged out successfully"
+        });
+
+    } catch (error) {
+        console.log("error in: logoutUser() ==> ", error);
+    }
+};
+
