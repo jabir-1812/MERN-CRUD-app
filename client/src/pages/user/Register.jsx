@@ -83,6 +83,9 @@ export default function Register(){
                     <button type="submit">Submit</button>
                 </div>
             </form>
+            <div>
+                <Link to="/user/login">Login as user</Link>
+            </div>
         </>
         
     )
