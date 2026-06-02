@@ -123,3 +123,47 @@ export const loginUser = async (req, res)=>{
     }
 }
 
+
+export const refreshToken = async (req, res) => {
+
+    const token = req.cookies.refreshToken;
+    console.log("token oooooo", token)
+
+    if (!token) {
+        return res.sendStatus(401);
+    }
+
+    try {
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_REFRESH_TOKEN_SECRET
+        );
+
+        const userData = await User.findById(decoded.userId).select("-password")
+        const accessToken = jwt.sign(
+            {
+                userId: decoded.userId,
+                isAdmin: decoded.isAdmin
+            },
+            process.env.JWT_ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: "15m"
+            }
+        );
+
+        // console.log("access token refresh===", decoded)
+
+        res.json({
+            accessToken, 
+            user: userData
+        });
+
+    } catch (error) {
+
+        res.sendStatus(403);
+        console.log("error in refreshToken() ==", error)
+
+    }
+};
+
