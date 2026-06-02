@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import api from '../../api/axios';
@@ -10,6 +10,9 @@ import { setCredentials } from '../../features/auth/authSlice';
 
 export default function Login() {
     const dispatch = useDispatch();
+    
+    const navigate = useNavigate();
+
     const userData = useSelector((state)=> state.auth.user)
 
     const {register, handleSubmit, formState:{errors}}= useForm();
@@ -32,6 +35,8 @@ export default function Login() {
                     user: response.data.user
                 })
             )
+
+            navigate("/user/home", {replace : true})
             
         } catch (error) {
             if(error.response){
