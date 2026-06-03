@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
 import User from "../models/User.js";
 import { STATUS_CODES } from "../../shared/statusCodes.js";
+import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res)=>{
     try {
@@ -16,10 +17,11 @@ export const registerUser = async (req, res)=>{
             });
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
             name,
             email, 
-            password
+            password: hashedPassword
         })
 
         const accessToken = jwt.sign(
@@ -51,6 +53,7 @@ export const registerUser = async (req, res)=>{
         res.json({
             success: true, 
             message:"User registered successfully", 
+            accessToken,
             user: {
                 id: user._id,
                 name: user.name,
@@ -89,13 +92,26 @@ export const loginUser = async (req, res)=>{
             });
         }
 
-        if(user.password !== password){
-            console.log("password wrong")
+        const isPasswordMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!isPasswordMatch) {
+            console.log("hashed password is not matching")
             return res.status(STATUS_CODES.UNAUTHORIZED).json({
-                success: false, 
+                success: false,
                 message: "Email or password is wrong"
             });
         }
+
+        // if(user.password !== password){
+        //     console.log("password wrong")
+        //     return res.status(STATUS_CODES.UNAUTHORIZED).json({
+        //         success: false, 
+        //         message: "Email or password is wrong"
+        //     });
+        // }
 
 
 

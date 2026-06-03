@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
@@ -13,13 +13,16 @@ export default function Login() {
     
     const navigate = useNavigate();
 
-    const userData = useSelector((state)=> state.auth.user)
+    const userData = useSelector((state)=> state.auth.user);
 
-    const {register, handleSubmit, formState:{errors}}= useForm();
+    const [formSubmissionError, setFormSubmissionError]= useState("");
     
+    const {register, handleSubmit, formState:{errors}}= useForm();
+
     async function onSubmit(formData) {
         try {
-            console.log("form data after submission===>", formData)
+            // console.log("form data after submission===>", formData)
+            setFormSubmissionError("");
 
             const response = await api.post(
                 "/user/login",
@@ -28,6 +31,10 @@ export default function Login() {
 
             
             console.log("response data====", response.data)
+            if(!response.data.success){
+                setFormSubmissionError(response.data.message);
+                return;
+            }
             
             dispatch(
                 setCredentials({
@@ -41,6 +48,7 @@ export default function Login() {
         } catch (error) {
             if(error.response){
                 console.log("response data ===> ", error.response.data)
+                setFormSubmissionError(error.response.data.message);
             }else{
                 console.log("error in |Login.jsx|=>", error)
             }    
@@ -49,6 +57,7 @@ export default function Login() {
   return (
     <div>
         <h1>Login Page</h1>
+        <div>{formSubmissionError && formSubmissionError}</div>
         <div>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div>
