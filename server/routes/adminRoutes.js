@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
 
+import { loginAdmin } from "../controllers/adminController.js";
 
-router.get('/', (req, res)=>{
-    res.send("admin route")
-})
+
+router.post('/login', loginAdmin)
 
 
 export default router;

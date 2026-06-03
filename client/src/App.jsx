@@ -11,11 +11,13 @@ import UserHome from './pages/user/Home';
 import NotFound from "./pages/NotFound";
 import PublicRoute from "./pages/user/PublicRoute";
 import ProtectedRoute from "./pages/user/ProtectedRoute";
+import AdminLoginPage from "./pages/admin/Login";
+import AdminDashboardPage from "./pages/admin/Dashboard";
 
 export default function App() {
     const dispatch = useDispatch();
 
-    useEffect(()=>{
+    useEffect(() => {
         const verifyLogin = async () => {
             try {
                 const response = await api.post('/user/refresh-token');
@@ -39,14 +41,8 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 <Route index path='/' element={<Index />} />
-                <Route 
-                    path="/user/register" 
-                    element={
-                        
-                            <Register/>
-                        
-                    } />
-                <Route 
+                <Route path="/user/register" element={<Register />} />
+                <Route
                     path="/user/login"
                     element={
                         <PublicRoute>
@@ -54,14 +50,17 @@ export default function App() {
                         </PublicRoute>
                     }
                 />
-                <Route 
-                    path="/user/home" 
+                <Route
+                    path="/user/home"
                     element={
                         <ProtectedRoute>
-                            <UserHome/>
+                            <UserHome />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
+
+                <Route path="/admin/login" element={<AdminLoginPage/>} />
+                <Route path="/admin/dashboard" element={<AdminDashboardPage/>} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
