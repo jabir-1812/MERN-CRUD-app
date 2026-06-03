@@ -22,7 +22,42 @@ export const registerUser = async (req, res)=>{
             password
         })
 
-        res.json({success: true, message:"User registered successfully", user})
+        const accessToken = jwt.sign(
+            {
+                userId: user._id,
+                isAdmin: user.isAdmin
+            },
+            process.env.JWT_ACCESS_TOKEN_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        const refreshToken = jwt.sign(
+            {
+                userId: user._id,
+                isAdmin: user.isAdmin
+            },
+            process.env.JWT_REFRESH_TOKEN_SECRET,
+            {expiresIn: "7d"}
+        )
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        });
+
+
+        res.json({
+            success: true, 
+            message:"User registered successfully", 
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                isAdmin: user.isAdmin
+            }
+        })
     } catch (error) {
         console.error("error in the registerUser() ===> ", error)
         

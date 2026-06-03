@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {useForm} from "react-hook-form";
 import axios from "axios";
 import api from "../../api/axios";
 import { STATUS_CODES } from "../../../../shared/statusCodes";
+import { useDispatch, useSelector } from "react-redux";
+import { setCredentials } from "../../features/auth/authSlice";
 
 
 export default function Register(){
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
     const {register, handleSubmit, watch, formState:{errors}} = useForm();
 
     const password = watch("password");
@@ -30,6 +35,16 @@ export default function Register(){
                 setFormSubmissionError(response.data.message);
                 return;
             }
+
+            dispatch(
+                setCredentials({
+                    accessToken: response.data.accessToken,
+                    user: response.data.user
+                })
+            )
+
+            navigate("/user/home", {replace : true})
+            
         } catch (error) {
             console.log("error in |Register.jsx|=>", error)
         }

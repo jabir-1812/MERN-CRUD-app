@@ -42,9 +42,9 @@ export default function App() {
                 <Route 
                     path="/user/register" 
                     element={
-                        <PublicRoute>
+                        
                             <Register/>
-                        </PublicRoute>
+                        
                     } />
                 <Route 
                     path="/user/login"
