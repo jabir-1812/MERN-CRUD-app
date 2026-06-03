@@ -79,3 +79,66 @@ export const loginAdmin = async (req, res)=> {
         console.log("error in loginAdmin() ==> ", error)
     }
 }
+
+
+
+export const refreshToken = async (req, res) => {
+
+    const token = req.cookies.adminRefreshToken;
+    console.log("admin token oooooo", token)
+
+    if (!token) {
+        return res.sendStatus(401);
+    }
+
+    try {
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_REFRESH_TOKEN_SECRET
+        );
+
+        const adminData = await User.findById(decoded.adminId).select("-password")
+        const adminAccessToken = jwt.sign(
+            {
+                adminId: decoded.adminId,
+                isAdmin: decoded.isAdmin
+            },
+            process.env.JWT_ACCESS_TOKEN_SECRET,
+            {
+                expiresIn: "15m"
+            }
+        );
+
+        // console.log("access token refresh===", decoded)
+
+        res.json({
+            adminAccessToken, 
+            adminData
+        });
+
+    } catch (error) {
+
+        res.sendStatus(403);
+        console.log("error in refreshToken() ==", error)
+
+    }
+};
+
+
+
+export const logoutAdmin = async (req, res)=>{
+    try {
+        res.clearCookie("adminRefreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict"
+        })
+
+        return res.status(STATUS_CODES.OK).json({
+            message: "admin logged out successfully"
+        });
+    } catch (error) {
+        console.log("error in: logoutAdmin() ==> ", error)
+    }
+}

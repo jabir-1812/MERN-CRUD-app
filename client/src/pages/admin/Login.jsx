@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import api from '../../api/axios';
+import adminApi from '../../api/adminAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAdminCredentials } from '../../features/auth/adminAuthSlice';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ export default function Login() {
             // console.log("form data after submission===>", formData)
             setFormSubmissionError("");
 
-            const response = await api.post(
+            const response = await adminApi.post(
                 "/admin/login",
                 formData
             )

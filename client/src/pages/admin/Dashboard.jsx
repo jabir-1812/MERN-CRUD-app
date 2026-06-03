@@ -1,18 +1,22 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import adminApi from '../../api/adminAxios';
+import { adminLogout } from '../../features/auth/adminAuthSlice';
 
 export default function Dashboard() {
 
     const {adminData, adminDashboardLoading} = useSelector((state)=> state.adminAuth)
     console.log("adminData==", adminData)
 
+    const dispatch = useDispatch();
+
     const handleLogout = async () => {
-        // try {
-        //     await api.post("/admin/logout");
-        //     dispatch(logout());
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        try {
+            await adminApi.post("/admin/logout");
+            dispatch(adminLogout());
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     if(adminDashboardLoading){
