@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
 import api from '../../api/axios';
+import {Link} from "react-router-dom"
 
 export default function Home() {
 
@@ -35,6 +36,11 @@ export default function Home() {
         <h2>Welcome 🎉{user?.name}</h2>
         <div>
             <button onClick={handleLogout}>Logout</button>
+        </div>
+        <div>
+            <button>
+                <Link to="/user/profile">Profile</Link>
+            </button>
         </div>
     </div>
   )

@@ -16,6 +16,8 @@ import AdminLoginPage from "./pages/admin/Login";
 import AdminDashboardPage from "./pages/admin/Dashboard";
 import { setAdminCredentials, setAdminDashboardLoading } from "./features/auth/adminAuthSlice";
 import AdminProtectedRoute from "./pages/admin/AdminProtectedRoute";
+import ProfilePage from "./pages/user/Profile";
+import EditProfilePage from "./pages/user/EditProfile";
 
 
 export default function App() {
@@ -74,6 +76,23 @@ export default function App() {
                     element={
                         <ProtectedRoute>
                             <UserHome />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/user/profile"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/user/edit-profile"
+                    element={
+                        <ProtectedRoute>
+                            <EditProfilePage />
                         </ProtectedRoute>
                     }
                 />

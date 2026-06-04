@@ -5,6 +5,12 @@ const initialState = {
     user: null,
     loading: true
 };
+// user: {
+//     id: user._id,
+//     name: user.name,
+//     email: user.email,
+//     isAdmin: user.isAdmin
+// }
 
 const authSlice = createSlice({
     name: "auth",
@@ -22,10 +28,14 @@ const authSlice = createSlice({
 
         setLoading: (state, action)=>{
             state.loading = action.payload
+        }, 
+
+        updateUser(state, action) {
+            state.user = action.payload;
         }
     }
 });
 
-export const { setCredentials, logout, setLoading } = authSlice.actions;
+export const { setCredentials, logout, setLoading, updateUser } = authSlice.actions;
 
 export default authSlice.reducer;
