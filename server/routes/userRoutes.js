@@ -3,6 +3,7 @@ const router = express.Router();
 
 
 import { loginUser, registerUser, refreshToken, logoutUser } from "../controllers/userController.js";
+import { verifyUser } from "../middleware/verifyUser.js";
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);

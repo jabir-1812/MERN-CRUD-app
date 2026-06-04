@@ -44,7 +44,7 @@ export const loginAdmin = async (req, res)=> {
          const adminAccessToken = jwt.sign(
             {
                 adminId: adminData._id,
-                isAdmin: adminData.isAdmin
+                role: "admin"
             },
             process.env.JWT_ACCESS_TOKEN_SECRET,
             {expiresIn: "15m"}
@@ -53,7 +53,7 @@ export const loginAdmin = async (req, res)=> {
         const adminRefreshToken = jwt.sign(
             {
                 adminId: adminData._id,
-                isAdmin: adminData.isAdmin
+                role: "admin"
             },
             process.env.JWT_REFRESH_TOKEN_SECRET,
             {expiresIn: "7d"}
@@ -140,5 +140,22 @@ export const logoutAdmin = async (req, res)=>{
         });
     } catch (error) {
         console.log("error in: logoutAdmin() ==> ", error)
+    }
+}
+
+
+
+export const getUsersList = async (req, res)=>{
+    try {
+        const usersList = await User.find({isAdmin: false}).select("-password");
+
+        res.status(STATUS_CODES.OK).json({usersList, success: true})
+    } catch (error) {
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Inernal error in fetching users list"
+        })
+
+        console.log("error in getUserList() ==> ", error);
     }
 }

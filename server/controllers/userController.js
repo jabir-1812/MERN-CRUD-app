@@ -27,7 +27,7 @@ export const registerUser = async (req, res)=>{
         const accessToken = jwt.sign(
             {
                 userId: user._id,
-                isAdmin: user.isAdmin
+                role: "user"
             },
             process.env.JWT_ACCESS_TOKEN_SECRET,
             { expiresIn: "15m" }
@@ -36,7 +36,7 @@ export const registerUser = async (req, res)=>{
         const refreshToken = jwt.sign(
             {
                 userId: user._id,
-                isAdmin: user.isAdmin
+                role: "user"
             },
             process.env.JWT_REFRESH_TOKEN_SECRET,
             {expiresIn: "7d"}
