@@ -18,6 +18,8 @@ import { setAdminCredentials, setAdminDashboardLoading } from "./features/auth/a
 import AdminProtectedRoute from "./pages/admin/AdminProtectedRoute";
 import ProfilePage from "./pages/user/Profile";
 import EditProfilePage from "./pages/user/EditProfile";
+import EditUserPage from "./pages/admin/EditUser";
+import CreateUserPage from "./pages/user/CreateUser";
 
 
 export default function App() {
@@ -103,6 +105,23 @@ export default function App() {
                     element={
                         <AdminProtectedRoute>
                             <AdminDashboardPage/>
+                        </AdminProtectedRoute>
+                    } 
+                />
+                <Route 
+                    path="/admin/edit-user/:userId" 
+                    element={
+                        <AdminProtectedRoute>
+                            <EditUserPage/>
+                        </AdminProtectedRoute>
+                    } 
+                />
+
+                <Route 
+                    path="/admin/create-new-user" 
+                    element={
+                        <AdminProtectedRoute>
+                            <CreateUserPage/>
                         </AdminProtectedRoute>
                     } 
                 />

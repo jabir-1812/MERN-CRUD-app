@@ -156,7 +156,7 @@ export const loginUser = async (req, res)=>{
 export const refreshToken = async (req, res) => {
 
     const token = req.cookies.refreshToken;
-    console.log("token oooooo", token)
+    // console.log("token oooooo", token)
 
     if (!token) {
         return res.sendStatus(401);
@@ -221,7 +221,7 @@ export const logoutUser = async (req, res) => {
 export const editProfile = async (req, res)=>{
     try {
 
-        console.log("req body edit-profile =>", req.body)
+        // console.log("req body edit-profile =>", req.body)
         // console.log("req file edit-profile =>", req.file)
         // res.json({success: true})
         const updateData = {

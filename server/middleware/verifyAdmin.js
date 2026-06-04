@@ -19,6 +19,8 @@ export const verifyAdmin = (req, res, next) => {
             process.env.JWT_ACCESS_TOKEN_SECRET
         );
 
+        // console.log("decoded admin token", decoded)
+
         if (decoded.role !== "admin") {
             return res.status(STATUS_CODES.FORBIDDEN).json({
                 success: false,
