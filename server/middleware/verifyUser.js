@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { STATUS_CODES } from "../../shared/statusCodes";
+import { STATUS_CODES } from "../../shared/statusCodes.js";
 
 export const verifyUser = (req, res, next) => {
     try {

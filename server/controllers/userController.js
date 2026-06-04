@@ -105,29 +105,7 @@ export const loginUser = async (req, res)=>{
             });
         }
 
-        // if(user.password !== password){
-        //     console.log("password wrong")
-        //     return res.status(STATUS_CODES.UNAUTHORIZED).json({
-        //         success: false, 
-        //         message: "Email or password is wrong"
-        //     });
-        // }
-
-
-
-        // const token = jwt.sign(
-        //     {
-        //         id: user._id,
-        //         isAdmin: user.isAdmin
-        //     }, 
-        //     process.env.JWT_ACCESS_TOKEN_SECRET,
-        //     {
-        //         expiresIn: "15m"
-        //     }
-        // )
-
-        // res.json({token})
-        ///////////////////////////////////////////////
+        
 
         const accessToken = jwt.sign(
             {
