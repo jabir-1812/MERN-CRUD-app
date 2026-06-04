@@ -173,7 +173,10 @@ export const getUsersList = async (req, res)=>{
 
         const totalUsers = await User.countDocuments(query);
 
-        const usersList = await User.find(query).skip((page - 1) * limit).limit(limit);
+        const usersList = await User.find(query)
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(limit);
 
         res.status(STATUS_CODES.OK).json({
             usersList, 
@@ -321,6 +324,32 @@ export const createUser = async (req, res)=>{
 
         res.status(500).json({
             message: "Internal server error",
+        });
+    }
+}
+
+
+
+export const deleteUser = async (req, res)=>{
+    try {
+        const { userId } = req.params;
+
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "User deleted successfully"
+        });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            message: "Internal server error"
         });
     }
 }

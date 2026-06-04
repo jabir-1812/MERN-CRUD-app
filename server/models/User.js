@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true},
   password: String, 
   isAdmin:{ type: Boolean, default: false},
-  profileImage: {type: String, default: null}
-});
+  profileImage: {type: String, default: null},
+  
+}, {timestamps: true});
 
 export default  mongoose.model("User", userSchema);

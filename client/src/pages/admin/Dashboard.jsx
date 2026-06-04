@@ -27,6 +27,28 @@ export default function Dashboard() {
     const [totalPages, setTotalPages] = useState(1)
     const [page, setPage] = useState(1);
 
+
+    const handleDeleteUser = async (userId, userName) => {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete ${userName}?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            await adminApi.delete(`/admin/delete-user/${userId}`);
+
+            setUsersList((prevUsers) =>
+                prevUsers.filter((user) => user._id !== userId)
+            );
+
+            alert("User deleted successfully");
+        } catch (error) {
+            console.log(error);
+            alert("Failed to delete user");
+        }
+    };
+
     useEffect(()=>{
         if(!adminData) return;
         async function fetchUsersList() {
@@ -94,7 +116,7 @@ export default function Dashboard() {
                         <Link to={`/admin/edit-user/${user._id}`}>
                             <button>Edit</button>
                         </Link>
-                        <button>delete</button>
+                        <button onClick={()=> handleDeleteUser(user._id, user.name)}>delete</button>
                     </div>
                     <hr />
                 </div>
