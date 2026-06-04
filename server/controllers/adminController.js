@@ -149,9 +149,38 @@ export const logoutAdmin = async (req, res)=>{
 export const getUsersList = async (req, res)=>{
     try {
         // console.log("usersList is runninggg...")
-        const usersList = await User.find({isAdmin: false}).select("-password");
+        const page = Number(req.query.page || 1);
+        const limit = 5;
+        const search = req.query.search || "";
 
-        res.status(STATUS_CODES.OK).json({usersList, success: true})
+        const query = {
+            isAdmin: false,
+            $or: [
+                {
+                    name: {
+                        $regex: search,
+                        $options: "i",
+                    },
+                },
+                {
+                    email: {
+                        $regex: search,
+                        $options: "i",
+                    },
+                },
+            ],
+        };
+
+        const totalUsers = await User.countDocuments(query);
+
+        const usersList = await User.find(query).skip((page - 1) * limit).limit(limit);
+
+        res.status(STATUS_CODES.OK).json({
+            usersList, 
+            totalPages: Math.ceil(totalUsers/limit), 
+            currentPage: page,
+            success: true
+        })
     } catch (error) {
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
             success: false,
