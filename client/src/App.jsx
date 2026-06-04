@@ -19,7 +19,7 @@ import AdminProtectedRoute from "./pages/admin/AdminProtectedRoute";
 import ProfilePage from "./pages/user/Profile";
 import EditProfilePage from "./pages/user/EditProfile";
 import EditUserPage from "./pages/admin/EditUser";
-import CreateUserPage from "./pages/user/CreateUser";
+import CreateUserPage from "./pages/admin/CreateUser";
 
 
 export default function App() {

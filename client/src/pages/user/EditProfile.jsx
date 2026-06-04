@@ -1,4 +1,91 @@
-import React from 'react';
+// import React from 'react';
+// import { useForm } from 'react-hook-form';
+// import { useDispatch, useSelector } from 'react-redux';
+// import api from '../../api/axios';
+// import { updateUser } from '../../features/auth/authSlice';
+// import { useNavigate } from 'react-router-dom';
+
+// export default function EditProfile() {
+//     const userData = useSelector((state)=> state.auth.user);
+//     const {register, handleSubmit, formState: {errors}} = useForm({
+//         defaultValues:{
+//             name: userData?.name,
+//             email: userData?.email
+//         }
+//     });
+
+//     const dispatch = useDispatch();
+//     const navigate = useNavigate();
+
+//     async function onSubmit(data) {
+//         console.log("form data after submission===", data)
+//         const formData = new FormData();
+
+//         formData.append("name", data.name);
+//         formData.append("email", data.email);
+
+//         if (data.profileImage[0]) {
+//             formData.append("profileImage", data.profileImage[0]);
+//         }
+
+//         try {
+//             const response = await api.put(
+//                 "/user/edit-profile",
+//                 formData
+//             );
+
+//             console.log(response.data);
+
+//             dispatch(
+//                 updateUser(response.data)
+//             );
+
+//             navigate('/user/profile');
+
+//         } catch (error) {
+//             console.log(error);
+//         }
+//     }
+//   return (
+//     <div>
+//         <h1>Edit profile</h1>
+//         <div>
+//             <form onSubmit={handleSubmit(onSubmit)}>
+//                 <div>
+//                     <input
+//                         type="file"
+//                         accept="image/*"
+//                         {...register("profileImage")}
+//                     />
+//                 </div>
+//                 <div>
+//                     <input {...register("name", {required: true})} placeholder="Name"/>
+//                     {errors.name && <p>Name is required</p>}
+//                 </div>
+//                 <div>
+//                     <input type="email" 
+//                     {...register("email", {
+//                             required: "Email is required",
+//                             pattern: {
+//                                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+//                                 message: "Enter a valid email address",
+//                             }
+//                         }
+//                     )} 
+//                     placeholder="Email"/>
+//                     {errors.email && <p>{errors.email.message}</p>}
+//                 </div>
+                
+//                 <div>
+//                     <button type="submit">Submit</button>
+//                 </div>
+//             </form>
+//         </div>
+//     </div>
+//   )
+// }
+
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import api from '../../api/axios';
@@ -6,81 +93,151 @@ import { updateUser } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 export default function EditProfile() {
-    const userData = useSelector((state)=> state.auth.user);
-    const {register, handleSubmit, formState: {errors}} = useForm({
-        defaultValues:{
-            name: userData?.name,
-            email: userData?.email
+    const userData = useSelector((state) => state.auth.user);
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm({
+        defaultValues: {
+            name: userData?.name || "",
+            email: userData?.email || ""
         }
     });
+
+    const [profileImage, setProfileImage] = useState(
+        userData?.profileImage || null
+    );
+
+    const [imageDeleted, setImageDeleted] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    function handleDeleteImage() {
+        setProfileImage(null);
+        setImageDeleted(true);
+    }
+
     async function onSubmit(data) {
-        console.log("form data after submission===", data)
-        const formData = new FormData();
-
-        formData.append("name", data.name);
-        formData.append("email", data.email);
-
-        if (data.profileImage[0]) {
-            formData.append("profileImage", data.profileImage[0]);
-        }
-
         try {
+            const formData = new FormData();
+
+            formData.append("name", data.name);
+            formData.append("email", data.email);
+            formData.append("imageDeleted", imageDeleted);
+
+            if (data.profileImage?.[0]) {
+                formData.append(
+                    "profileImage",
+                    data.profileImage[0]
+                );
+            }
+
             const response = await api.put(
                 "/user/edit-profile",
-                formData
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }
             );
-
-            console.log(response.data);
 
             dispatch(
-                updateUser(response.data)
+                updateUser(response.data.user)
             );
 
-            navigate('/user/profile');
+            navigate("/user/profile");
 
         } catch (error) {
             console.log(error);
         }
     }
-  return (
-    <div>
-        <h1>Edit profile</h1>
+
+    return (
         <div>
+            <h1>Edit Profile</h1>
+
             <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Profile Image Section */}
+                <div>
+                    {profileImage ? (
+                        <>
+                            <div>
+                                <img
+                                    src={`http://localhost:5000/${profileImage}`}
+                                    alt="Profile"
+                                    width="150"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleDeleteImage}
+                            >
+                                Delete Image
+                            </button>
+                        </>
+                    ) : (
+                        <div>
+                            <label>Upload Profile Image</label>
+
+                            <input
+                                type="file"
+                                accept="image/*"
+                                {...register("profileImage")}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                <br />
+
+                {/* Name */}
                 <div>
                     <input
-                        type="file"
-                        accept="image/*"
-                        {...register("profileImage")}
+                        {...register("name", {
+                            required: "Name is required"
+                        })}
+                        placeholder="Name"
                     />
+
+                    {errors.name && (
+                        <p>{errors.name.message}</p>
+                    )}
                 </div>
+
+                <br />
+
+                {/* Email */}
                 <div>
-                    <input {...register("name", {required: true})} placeholder="Name"/>
-                    {errors.name && <p>Name is required</p>}
-                </div>
-                <div>
-                    <input type="email" 
-                    {...register("email", {
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        {...register("email", {
                             required: "Email is required",
                             pattern: {
-                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                message: "Enter a valid email address",
+                                value:
+                                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                message:
+                                    "Enter a valid email address"
                             }
-                        }
-                    )} 
-                    placeholder="Email"/>
-                    {errors.email && <p>{errors.email.message}</p>}
+                        })}
+                    />
+
+                    {errors.email && (
+                        <p>{errors.email.message}</p>
+                    )}
                 </div>
-                
-                <div>
-                    <button type="submit">Submit</button>
-                </div>
+
+                <br />
+
+                <button type="submit">
+                    Update Profile
+                </button>
             </form>
         </div>
-    </div>
-  )
+    );
 }

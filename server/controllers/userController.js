@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken"
 import User from "../models/User.js";
 import { STATUS_CODES } from "../../shared/statusCodes.js";
 import bcrypt from "bcrypt";
+import path from "path";
+import fs from "fs";
 
 export const registerUser = async (req, res)=>{
     try {
@@ -219,34 +221,101 @@ export const logoutUser = async (req, res) => {
 
 
 export const editProfile = async (req, res)=>{
+    // try {
+
+    //     // console.log("req body edit-profile =>", req.body)
+    //     // console.log("req file edit-profile =>", req.file)
+    //     // res.json({success: true})
+    //     const updateData = {
+    //         name: req.body.name,
+    //         email: req.body.email
+    //     };
+
+    //     if (req.file) {
+    //         updateData.profileImage =
+    //             `uploads/${req.file.filename}`;
+    //     }
+
+    //     const updatedUser =
+    //         await User.findOneAndUpdate(
+    //             {email: req.body.email},
+    //             updateData,
+    //             { returnDocument: "after" }
+    //         );
+
+    //     res.status(200).json(updatedUser);
+
+    // } catch (error) {
+    //     console.log("error in editProfile() ==> ", error)
+    //     res.status(500).json({
+    //         message: error.message
+    //     });
+    // }
     try {
+        const userId = req.user.userId;
 
-        // console.log("req body edit-profile =>", req.body)
-        // console.log("req file edit-profile =>", req.file)
-        // res.json({success: true})
-        const updateData = {
-            name: req.body.name,
-            email: req.body.email
-        };
+        const { name, email, imageDeleted } = req.body;
 
-        if (req.file) {
-            updateData.profileImage =
-                `uploads/${req.file.filename}`;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found"
+            });
         }
 
-        const updatedUser =
-            await User.findOneAndUpdate(
-                {email: req.body.email},
-                updateData,
-                { returnDocument: "after" }
+        // Update basic details
+        user.name = name;
+        user.email = email;
+
+        // Delete current image if requested
+        if (
+            imageDeleted === "true" &&
+            user.profileImage
+        ) {
+            const imagePath = path.join(
+                process.cwd(),
+                user.profileImage
             );
 
-        res.status(200).json(updatedUser);
+            if (fs.existsSync(imagePath)) {
+                fs.unlinkSync(imagePath);
+            }
+
+            user.profileImage = null;
+        }
+
+        // Upload new image
+        if (req.file) {
+
+            // Remove old image first
+            if (user.profileImage) {
+                const oldImagePath = path.join(
+                    process.cwd(),
+                    user.profileImage
+                );
+
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+
+            user.profileImage =
+                req.file.path.replace(/\\/g, "/");
+        }
+
+        await user.save();
+
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user
+        });
 
     } catch (error) {
-        console.log("error in editProfile() ==> ", error)
+        console.log(error);
+
         res.status(500).json({
-            message: error.message
+            message: "Internal server error"
         });
     }
 }
