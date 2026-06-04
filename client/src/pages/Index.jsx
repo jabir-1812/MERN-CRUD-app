@@ -8,7 +8,6 @@ export default function Index() {
         <div><Link to="/user/login">Login as USER</Link></div>
         <div><Link to="/user/register">Register as USER</Link></div>
         <div><Link to="/admin/login">Login as ADMIN</Link></div>
-
     </div>
   )
 }
