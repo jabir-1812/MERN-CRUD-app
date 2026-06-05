@@ -32,7 +32,9 @@ api.interceptors.response.use(
             error.response?.status === 401 &&
             originalRequest &&
             !originalRequest._retry &&
-            !originalRequest.url.includes('/user/refresh-token')
+            !originalRequest.url.includes('/user/refresh-token') &&
+            !originalRequest.url.includes('/user/login')&&
+            !originalRequest.url.includes('/user/register')
         ) {
             originalRequest._retry = true;
 
