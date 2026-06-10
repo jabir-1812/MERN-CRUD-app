@@ -216,36 +216,7 @@ export const logoutUser = async (req, res) => {
 
 
 export const editProfile = async (req, res)=>{
-    // try {
-
-    //     // console.log("req body edit-profile =>", req.body)
-    //     // console.log("req file edit-profile =>", req.file)
-    //     // res.json({success: true})
-    //     const updateData = {
-    //         name: req.body.name,
-    //         email: req.body.email
-    //     };
-
-    //     if (req.file) {
-    //         updateData.profileImage =
-    //             `uploads/${req.file.filename}`;
-    //     }
-
-    //     const updatedUser =
-    //         await User.findOneAndUpdate(
-    //             {email: req.body.email},
-    //             updateData,
-    //             { returnDocument: "after" }
-    //         );
-
-    //     res.status(200).json(updatedUser);
-
-    // } catch (error) {
-    //     console.log("error in editProfile() ==> ", error)
-    //     res.status(500).json({
-    //         message: error.message
-    //     });
-    // }
+    
     try {
         const userId = req.user.userId;
 
