@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from "../../features/auth/adminAuthSlice";
 import adminApi from "../../api/adminAxios";
-import { fetchUsers, deleteUser } from "../../features/adminSide/usersSlice";
+import { fetchUsers, deleteUser, setCurrentPage } from "../../features/adminSide/usersSlice";
 import { Link } from "react-router-dom";
 
 export default function Dashboard2() {
@@ -38,6 +38,7 @@ export default function Dashboard2() {
 
             // alert("User deleted successfully");
             const result = await dispatch(deleteUser(userId)).unwrap();
+            dispatch(fetchUsers(currentPage))
             console.log("result from thunk:", result);
             alert("User deleted successfully !");
 
@@ -49,8 +50,8 @@ export default function Dashboard2() {
 
 
     useEffect(()=>{
-        dispatch(fetchUsers());
-    }, [dispatch]);
+        dispatch(fetchUsers(currentPage));
+    }, [dispatch, currentPage]);
 
     if(loading){
         return(
@@ -104,7 +105,8 @@ export default function Dashboard2() {
         <div>
             <button
                 className='bg-grey-200 p-1 border border-black'
-                onClick={() => dispatch(fetchUsers(currentPage - 1))}
+                // onClick={() => dispatch(fetchUsers(currentPage - 1))}
+                onClick={()=> dispatch(setCurrentPage(currentPage - 1))}
                 disabled={currentPage === 1}
                 >
                 Previous
@@ -116,7 +118,8 @@ export default function Dashboard2() {
 
             <button
                 className='bg-green-500 p-1 border border-black'
-                onClick={() => dispatch(fetchUsers(currentPage + 1))}
+                // onClick={() => dispatch(fetchUsers(currentPage + 1))}
+                onClick={()=> dispatch(setCurrentPage(currentPage + 1))}
                 disabled={currentPage === totalPages}
                 >
                 Next
