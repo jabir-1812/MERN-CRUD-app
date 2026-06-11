@@ -14,6 +14,19 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+export const addUser = createAsyncThunk(
+    "users/addUser",
+    async (userData) => {
+        const response = await adminApi.post(
+            "/admin/create-user",
+            userData,
+            // {headers: {"Content-Type": "multipart/form-data"}}
+        );
+        console.log("user slice === add user == response:", response)
+        return response.data.user
+    }
+)
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -33,7 +46,13 @@ const userSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
-      });
+      })
+      .addCase(addUser.fulfilled, (state, action)=>{
+        state.usersList.unshift(action.payload)
+      })
+      .addCase(addUser.rejected, (state, action)=>{
+        state.error = action.error.message
+      })
   },
 });
 

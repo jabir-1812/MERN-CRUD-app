@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import adminApi from "../../api/adminAxios";
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../../features/adminSide/usersSlice"
 
 const EyeIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -17,6 +19,7 @@ const EyeOffIcon = () => (
 );
 
 export default function CreateUser() {
+    const dispatch = useDispatch();
     const {
         register,
         handleSubmit,
@@ -46,6 +49,30 @@ export default function CreateUser() {
     }
 
     async function onSubmit(data) {
+        // try {
+        //     const formData = new FormData();
+
+        //     formData.append("name", data.name);
+        //     formData.append("email", data.email);
+        //     formData.append("password", data.password);
+
+        //     if (data.profileImage?.[0]) {
+        //         formData.append("profileImage", data.profileImage[0]);
+        //     }
+
+        //     const response = await adminApi.post(
+        //         "/admin/create-user",
+        //         formData,
+        //         { headers: { "Content-Type": "multipart/form-data" } }
+        //     );
+
+        //     console.log(response.data);
+        //     navigate("/admin/dashboard");
+
+        // } catch (error) {
+        //     console.log(error);
+        //     console.log(error?.response.data.message);
+        // }
         try {
             const formData = new FormData();
 
@@ -57,14 +84,19 @@ export default function CreateUser() {
                 formData.append("profileImage", data.profileImage[0]);
             }
 
-            const response = await adminApi.post(
-                "/admin/create-user",
-                formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
+            // const response = await adminApi.post(
+            //     "/admin/create-user",
+            //     formData,
+            //     { headers: { "Content-Type": "multipart/form-data" } }
+            // );
 
-            console.log(response.data);
+            // console.log(response.data);
+            // navigate("/admin/dashboard");
+
+            const result = await dispatch(addUser(formData)).unwrap();
+            console.log("result from the thunk:", result)
             navigate("/admin/dashboard");
+
 
         } catch (error) {
             console.log(error);

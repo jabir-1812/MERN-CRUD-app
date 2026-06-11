@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from "../../features/auth/adminAuthSlice";
 import adminApi from "../../api/adminAxios";
-import { fetchUsers } from "../../features/adminSide/usersSlice"
+import { fetchUsers } from "../../features/adminSide/usersSlice";
+import { Link } from "react-router-dom"
 
 export default function Dashboard2() {
     const { adminDashboardLoading } = useSelector((state)=> state.adminAuth)
@@ -45,6 +46,12 @@ export default function Dashboard2() {
         <h1 className='text-3xl'>admin dashboard</h1>
         <div>
             <button className='bg-red-100 border border-black' onClick={handleLogout}>Logout</button>
+        </div>
+
+        <div>
+            <Link to="/admin/create-new-user">
+                <button className='bg-green-200 border p-1 border-black'>Create new user</button>
+            </Link>
         </div>
 
         <div className='flex flex-col gap-1'>
