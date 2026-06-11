@@ -2,10 +2,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import a from "../../api/adminAxios";
 import adminApi from "../../api/adminAxios";
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async (page = 1) => {
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async ({page=1, search=""}) => {
   // const response = await fetch("/api/users");
   // return response.json();
-  const response = await adminApi(`/admin/users-list?page=${page}`);
+  const response = await adminApi(`/admin/users-list?page=${page}&search=${search}`);
   console.log("user slice == response", response);
   return response.data;
 });
@@ -48,11 +48,16 @@ const userSlice = createSlice({
     loading: false,
     error: null,
 
+    searchTerm: "",
+
     currentPage: 1,
     totalPages: 0,
     totalUsers: 0,
   },
   reducers:{
+    setSearchTerm: (state, action)=>{
+        state.searchTerm = action.payload
+    },
     setCurrentPage: (state, action)=>{
         state.currentPage = action.payload
     }
@@ -98,6 +103,6 @@ const userSlice = createSlice({
   },
 });
 
-export const {setCurrentPage} = userSlice.actions;
+export const {setSearchTerm, setCurrentPage} = userSlice.actions;
 export default userSlice.reducer;
 

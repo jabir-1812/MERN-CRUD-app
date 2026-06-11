@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from "../../features/auth/adminAuthSlice";
 import adminApi from "../../api/adminAxios";
-import { fetchUsers, deleteUser, setCurrentPage } from "../../features/adminSide/usersSlice";
+import { fetchUsers, deleteUser, setSearchTerm, setCurrentPage } from "../../features/adminSide/usersSlice";
 import { Link } from "react-router-dom";
 
 export default function Dashboard2() {
@@ -20,7 +20,7 @@ export default function Dashboard2() {
         }
     }
 
-    const { usersList, loading, error, currentPage, totalPages, totalUsers } = useSelector((state)=> state.users)
+    const { usersList, loading, error, searchTerm, currentPage, totalPages, totalUsers } = useSelector((state)=> state.users)
 
     async function handleDeleteUser(userId, userName) {
         const confirmed = window.confirm(
@@ -48,16 +48,30 @@ export default function Dashboard2() {
         }
     }
 
+    async function handleSearch(event) {
+        try {
+            dispatch(setSearchTerm(event.target.value))
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     useEffect(()=>{
-        dispatch(fetchUsers(currentPage));
+        dispatch(fetchUsers({search: searchTerm, page: currentPage}));
     }, [dispatch, currentPage]);
 
-    if(loading){
-        return(
-            <div>Loading users list...</div>
-        )
-    }
+
+    useEffect(()=>{
+        const timer = setTimeout(()=>{
+            dispatch(fetchUsers({search: searchTerm, page: currentPage}))
+        }, 500)
+
+        return ()=>{
+            clearInterval(timer)
+        }
+    }, [searchTerm])
+
 
     if(error){
         return (
@@ -75,10 +89,20 @@ export default function Dashboard2() {
         </div>
 
         <div>
+            <input 
+                value={searchTerm}
+                className='border border-black' 
+                type="text" 
+                onChange={handleSearch}/>
+        </div>
+
+        <div>
             <Link to="/admin/create-new-user">
                 <button className='bg-green-200 border p-1 border-black'>Create new user</button>
             </Link>
         </div>
+
+        {loading && <p>Loading....</p>}
 
         <div className='flex flex-col gap-1'>
             {usersList.map((user)=>{
