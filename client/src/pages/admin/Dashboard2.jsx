@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from "../../features/auth/adminAuthSlice";
 import adminApi from "../../api/adminAxios";
-import { fetchUsers } from "../../features/adminSide/usersSlice";
-import { Link } from "react-router-dom"
+import { fetchUsers, deleteUser } from "../../features/adminSide/usersSlice";
+import { Link } from "react-router-dom";
 
 export default function Dashboard2() {
     const { adminDashboardLoading } = useSelector((state)=> state.adminAuth)
@@ -21,6 +21,31 @@ export default function Dashboard2() {
     }
 
     const { usersList, loading, error } = useSelector((state)=> state.users)
+
+    async function handleDeleteUser(userId, userName) {
+        const confirmed = window.confirm(
+            `Are you sure you want to delete ${userName}?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            // await adminApi.delete(`/admin/delete-user/${userId}`);
+
+            // setUsersList((prevUsers) =>
+            //     prevUsers.filter((user) => user._id !== userId)
+            // );
+
+            // alert("User deleted successfully");
+            const result = await dispatch(deleteUser(userId)).unwrap();
+            console.log("result from thunk:", result);
+            alert("User deleted successfully !");
+
+        } catch (error) {
+            console.log(error);
+            alert("Failed to delete user");
+        }
+    }
 
 
     useEffect(()=>{
@@ -66,7 +91,11 @@ export default function Dashboard2() {
                         <Link to={`/admin/edit-user/${user._id}`}>
                             <button className='border bg-yellow-200'>Edit</button>
                         </Link>
-                        <button className='border bg-red-500'>Delete</button>
+                        <button 
+                            onClick={()=>handleDeleteUser(user._id, user.name)}
+                            className='border bg-red-500'>
+                                Delete
+                        </button>
                     </div>
                 )
             })}

@@ -31,6 +31,16 @@ export const updateUser = createAsyncThunk(
   },
 );
 
+
+export const deleteUser = createAsyncThunk(
+    "users/deleteUser",
+    async (userId) => {
+        const response = await adminApi.delete(`/admin/delete-user/${userId}`);
+        console.log("userSlice >> deleteUser >> response:", response)
+        return response.data.deletedUserData._id
+    }
+)
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -65,7 +75,13 @@ const userSlice = createSlice({
         if (index !== -1) {
           state.usersList[index] = action.payload;
         }
-      });
+      })
+      .addCase(deleteUser.fulfilled, (state, action)=>{
+        console.log("userdata id, ", action.payload)
+        state.usersList = state.usersList.filter((user)=> {
+            return user._id !== action.payload
+        })
+      })
   },
 });
 
