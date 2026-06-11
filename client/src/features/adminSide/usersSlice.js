@@ -2,12 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import a from "../../api/adminAxios";
 import adminApi from "../../api/adminAxios";
 
-export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async (page = 1) => {
   // const response = await fetch("/api/users");
   // return response.json();
-  const response = await adminApi("/admin/users-list");
+  const response = await adminApi(`/admin/users-list?page=${page}`);
   console.log("user slice == response", response);
-  return response.data.usersList;
+  return response.data;
 });
 
 export const addUser = createAsyncThunk("users/addUser", async (userData) => {
@@ -47,6 +47,10 @@ const userSlice = createSlice({
     usersList: [],
     loading: false,
     error: null,
+
+    currentPage: 1,
+    totalPages: 0,
+    totalUsers: 0,
   },
   extraReducers: (builder) => {
     builder
@@ -55,7 +59,11 @@ const userSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.usersList = action.payload;
+        state.usersList = action.payload.usersList;
+        state.currentPage = action.payload.currentPage;
+        state.totalPages = action.payload.totalPages;
+        state.totalUsers = action.payload.totalUsers;
+
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;

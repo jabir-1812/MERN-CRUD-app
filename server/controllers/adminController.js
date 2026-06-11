@@ -182,6 +182,7 @@ export const getUsersList = async (req, res)=>{
             usersList, 
             totalPages: Math.ceil(totalUsers/limit), 
             currentPage: page,
+            totalUsers,
             success: true
         })
     } catch (error) {

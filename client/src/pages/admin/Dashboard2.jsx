@@ -20,7 +20,7 @@ export default function Dashboard2() {
         }
     }
 
-    const { usersList, loading, error } = useSelector((state)=> state.users)
+    const { usersList, loading, error, currentPage, totalPages, totalUsers } = useSelector((state)=> state.users)
 
     async function handleDeleteUser(userId, userName) {
         const confirmed = window.confirm(
@@ -99,6 +99,28 @@ export default function Dashboard2() {
                     </div>
                 )
             })}
+        </div>
+
+        <div>
+            <button
+                className='bg-grey-200 p-1 border border-black'
+                onClick={() => dispatch(fetchUsers(currentPage - 1))}
+                disabled={currentPage === 1}
+                >
+                Previous
+            </button>
+
+            <span>
+                Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+                className='bg-green-500 p-1 border border-black'
+                onClick={() => dispatch(fetchUsers(currentPage + 1))}
+                disabled={currentPage === totalPages}
+                >
+                Next
+            </button>
         </div>
         
     </div>
