@@ -63,7 +63,9 @@ export default function Dashboard2() {
                         </div>
                         <div className='border'>name: {user.name}</div>
                         <div className='border'>email: {user.email}</div>
-                        <button className='border bg-yellow-200'>Edit</button>
+                        <Link to={`/admin/edit-user/${user._id}`}>
+                            <button className='border bg-yellow-200'>Edit</button>
+                        </Link>
                         <button className='border bg-red-500'>Delete</button>
                     </div>
                 )

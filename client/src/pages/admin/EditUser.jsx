@@ -3,9 +3,12 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import adminApi from "../../api/adminAxios";
 import { useNavigate, Link } from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {updateUser} from '../../features/adminSide/usersSlice'
 
 export default function EditUser() {
     const { userId } = useParams();
+    const dispatch = useDispatch();
 
     const {
         register,
@@ -47,6 +50,7 @@ export default function EditUser() {
     }
 
     async function onSubmit(data) {
+        console.log("data ==", data)
         const formData = new FormData();
 
         formData.append("name", data.name);
@@ -58,18 +62,28 @@ export default function EditUser() {
 
         formData.append("imageDeleted", imageDeleted);
 
-        try {
-            await adminApi.put(`/admin/edit-user/${userId}`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
+        // try {
+        //     await adminApi.put(`/admin/edit-user/${userId}`, formData, {
+        //         headers: {
+        //             "Content-Type": "multipart/form-data",
+        //         },
+        //     });
 
-            alert("User updated");
-            navigate('/admin/dashboard')
+        //     alert("User updated");
+        //     navigate('/admin/dashboard')
             
+        // } catch (error) {
+        //     console.log(error);
+        // }
+        console.log("edit user ==>", [...formData.entries()])
+        try {
+            const result = await dispatch(updateUser({formData, userId})).unwrap();
+            console.log("result form the thunk:", result)
+            navigate("/admin/dashboard");
+
         } catch (error) {
             console.log(error);
+            console.log(error?.response.data.message);
         }
     }
 
