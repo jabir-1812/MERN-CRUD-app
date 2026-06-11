@@ -5,6 +5,12 @@ const initialState = {
     adminData: null,
     adminDashboardLoading: true
 };
+// adminData: {
+//     id: ,
+//     name: ,
+//     email: ,
+//     isAdmin: 
+// }
 
 const adminAuthSlice = createSlice({
     name: "adminAuth",

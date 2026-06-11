@@ -13,7 +13,7 @@ import NotFound from "./pages/NotFound";
 import PublicRoute from "./pages/user/PublicRoute";
 import ProtectedRoute from "./pages/user/ProtectedRoute";
 import AdminLoginPage from "./pages/admin/Login";
-import AdminDashboardPage from "./pages/admin/Dashboard";
+import AdminDashboardPage from "./pages/admin/Dashboard2";
 import { setAdminCredentials, setAdminDashboardLoading } from "./features/auth/adminAuthSlice";
 import AdminProtectedRoute from "./pages/admin/AdminProtectedRoute";
 import ProfilePage from "./pages/user/Profile";
