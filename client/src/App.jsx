@@ -15,6 +15,7 @@ import ProtectedRoute from "./pages/user/ProtectedRoute";
 import AdminLoginPage from "./pages/admin/Login";
 import AdminDashboardPage from "./pages/admin/Dashboard2";
 import { setAdminCredentials, setAdminDashboardLoading } from "./features/auth/adminAuthSlice";
+import AdminPublicRoute from "./pages/admin/AdminPublicRoute";
 import AdminProtectedRoute from "./pages/admin/AdminProtectedRoute";
 import ProfilePage from "./pages/user/Profile";
 import EditProfilePage from "./pages/user/EditProfile";
@@ -99,7 +100,13 @@ export default function App() {
                     }
                 />
 
-                <Route path="/admin/login" element={<AdminLoginPage/>} />
+                <Route 
+                    path="/admin/login" 
+                    element={
+                        <AdminPublicRoute>
+                            <AdminLoginPage/>
+                        </AdminPublicRoute>
+                        } />
                 <Route 
                     path="/admin/dashboard" 
                     element={
