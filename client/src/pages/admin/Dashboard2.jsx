@@ -6,7 +6,7 @@ import { fetchUsers, deleteUser, setSearchTerm, setCurrentPage } from "../../fea
 import { Link } from "react-router-dom";
 
 export default function Dashboard2() {
-    const { adminDashboardLoading } = useSelector((state)=> state.adminAuth)
+    const {adminData,  adminDashboardLoading } = useSelector((state)=> state.adminAuth)
     // console.log("admin dashboard loading...", adminDashboardLoading)
 
     const dispatch = useDispatch();
@@ -30,13 +30,6 @@ export default function Dashboard2() {
         if (!confirmed) return;
 
         try {
-            // await adminApi.delete(`/admin/delete-user/${userId}`);
-
-            // setUsersList((prevUsers) =>
-            //     prevUsers.filter((user) => user._id !== userId)
-            // );
-
-            // alert("User deleted successfully");
             const result = await dispatch(deleteUser(userId)).unwrap();
             dispatch(fetchUsers(currentPage))
             console.log("result from thunk:", result);
@@ -82,74 +75,117 @@ export default function Dashboard2() {
     }
 
   return (
-    <div>
-        <h1 className='text-3xl'>admin dashboard</h1>
-        <div>
-            <button className='bg-red-100 border border-black' onClick={handleLogout}>Logout</button>
-        </div>
+    <div className="min-h-screen bg-gray-900 text-white px-4 py-8">
+        <div className="max-w-3xl mx-auto">
 
-        <div>
-            <input 
-                value={searchTerm}
-                className='border border-black' 
-                type="text" 
-                onChange={handleSearch}/>
-        </div>
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                <div>
+                    <h1 className="text-2xl font-bold text-white tracking-tight">Admin Dashboard</h1>
+                    <p className="mt-0.5 text-sm text-gray-400">
+                    Welcome back, <span className="text-yellow-400 font-semibold">{adminData?.name}</span> 🎉
+                    </p>
+                </div>
+                <button
+                    onClick={handleLogout}
+                    className="self-start sm:self-auto px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-400 active:scale-[0.98] transition-all duration-150"
+                >
+                    Logout
+                </button>
+            </div>
 
-        <div>
-            <Link to="/admin/create-new-user">
-                <button className='bg-green-200 border p-1 border-black'>Create new user</button>
-            </Link>
-        </div>
+             {/* Search & Create */}
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+                <input
+                    type="text"
+                    placeholder="Search users..."
+                    value={searchTerm}
+                    onChange={handleSearch}
+                    className="flex-1 px-4 py-2.5 rounded-lg border border-gray-600 bg-gray-800 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition"
+                />
+                <Link
+                    to="/admin/create-new-user"
+                    className="px-4 py-2.5 rounded-lg bg-yellow-500 text-gray-900 text-sm font-semibold text-center hover:bg-yellow-400 active:scale-[0.98] transition-all duration-150 whitespace-nowrap"
+                >
+                    + Create New User
+                </Link>
+            </div>
 
-        {loading && <p>Loading....</p>}
+            {loading && <p>Loading....</p>}
 
-        <div className='flex flex-col gap-1'>
-            {usersList.map((user)=>{
-                return(
-                    <div key={user._id} className='flex gap-3 p-1 bg-blue-50 hover:bg-blue-200'>
-                        <div>
-                            <img src={`http://localhost:5000/${user.profileImage}`} alt="" className='aspect-auto object-cover w-32'/>
+
+            {/* Users List */}
+            <div className="space-y-3">
+                {usersList.map((user) => (
+                    <div
+                        key={user._id}
+                        className="flex flex-col sm:flex-row sm:items-center gap-4 bg-gray-800 border border-gray-700 rounded-xl px-5 py-4"
+                    >
+                        {/* Avatar */}
+                        <div className="flex-shrink-0">
+                            {user?.profileImage ? (
+                            <img
+                                src={`http://localhost:5000/${user.profileImage}`}
+                                alt="Profile"
+                                className="w-12 h-12 rounded-full object-cover border-2 border-gray-600"
+                            />
+                            ) : (
+                            <div className="w-12 h-12 rounded-full bg-gray-700 border-2 border-gray-600 flex items-center justify-center text-lg font-bold text-gray-300">
+                                {user.name?.charAt(0).toUpperCase()}
+                            </div>
+                            )}
                         </div>
-                        <div className='border'>name: {user.name}</div>
-                        <div className='border'>email: {user.email}</div>
-                        <Link to={`/admin/edit-user/${user._id}`}>
-                            <button className='border bg-yellow-200'>Edit</button>
-                        </Link>
-                        <button 
-                            onClick={()=>handleDeleteUser(user._id, user.name)}
-                            className='border bg-red-500'>
-                                Delete
-                        </button>
+
+                        {/* User info */}
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">{user.name}</p>
+                            <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex gap-2 flex-shrink-0">
+                            <Link
+                            to={`/admin/edit-user/${user._id}`}
+                            className="px-3 py-1.5 rounded-lg border border-gray-600 text-gray-300 text-xs font-medium hover:bg-gray-700 active:scale-[0.98] transition-all duration-150"
+                            >
+                            Edit
+                            </Link>
+                            <button
+                            onClick={() => handleDeleteUser(user._id, user.name)}
+                            className="px-3 py-1.5 rounded-lg border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/10 active:scale-[0.98] transition-all duration-150"
+                            >
+                            Delete
+                            </button>
+                        </div>
                     </div>
-                )
-            })}
-        </div>
+                ))}
+            </div>
 
-        <div>
-            <button
-                className='bg-grey-200 p-1 border border-black'
-                // onClick={() => dispatch(fetchUsers(currentPage - 1))}
-                onClick={()=> dispatch(setCurrentPage(currentPage - 1))}
-                disabled={currentPage === 1}
+
+            {/* Pagination */}
+            <div className="flex items-center justify-center gap-4 mt-8">
+                <button
+                    disabled={currentPage === 1}
+                    onClick={()=> dispatch(setCurrentPage(currentPage - 1))}
+                    className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:bg-gray-700 active:scale-[0.98] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                 >
-                Previous
-            </button>
+                    ← Previous
+                </button>
 
-            <span>
-                Page {currentPage} of {totalPages}
-            </span>
+                <span className="text-sm text-gray-400">
+                    Page <span className="text-white font-semibold">{currentPage}</span> of{" "}
+                    <span className="text-white font-semibold">{totalPages}</span>
+                </span>
 
-            <button
-                className='bg-green-500 p-1 border border-black'
-                // onClick={() => dispatch(fetchUsers(currentPage + 1))}
-                onClick={()=> dispatch(setCurrentPage(currentPage + 1))}
-                disabled={currentPage === totalPages}
+                <button
+                    disabled={currentPage === totalPages}
+                    onClick={()=> dispatch(setCurrentPage(currentPage + 1))}
+                    className="px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:bg-gray-700 active:scale-[0.98] transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                 >
-                Next
-            </button>
-        </div>
-        
+                    Next →
+                </button>
+            </div>
+        </div>        
     </div>
   )
 }

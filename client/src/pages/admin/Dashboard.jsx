@@ -88,35 +88,35 @@ export default function Dashboard() {
 
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-            <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight">Admin Dashboard</h1>
-                <p className="mt-0.5 text-sm text-gray-400">
-                Welcome back, <span className="text-yellow-400 font-semibold">{adminData?.name}</span> 🎉
-                </p>
-            </div>
-            <button
-                onClick={handleLogout}
-                className="self-start sm:self-auto px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-400 active:scale-[0.98] transition-all duration-150"
-            >
-                Logout
-            </button>
+                <div>
+                    <h1 className="text-2xl font-bold text-white tracking-tight">Admin Dashboard</h1>
+                    <p className="mt-0.5 text-sm text-gray-400">
+                    Welcome back, <span className="text-yellow-400 font-semibold">{adminData?.name}</span> 🎉
+                    </p>
+                </div>
+                <button
+                    onClick={handleLogout}
+                    className="self-start sm:self-auto px-4 py-2 rounded-lg border border-gray-600 text-gray-300 text-sm font-medium hover:bg-red-500/10 hover:border-red-500/40 hover:text-red-400 active:scale-[0.98] transition-all duration-150"
+                >
+                    Logout
+                </button>
             </div>
 
             {/* Search & Create */}
             <div className="flex flex-col sm:flex-row gap-3 mb-6">
-            <input
-                type="text"
-                placeholder="Search users..."
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                className="flex-1 px-4 py-2.5 rounded-lg border border-gray-600 bg-gray-800 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition"
-            />
-            <Link
-                to="/admin/create-new-user"
-                className="px-4 py-2.5 rounded-lg bg-yellow-500 text-gray-900 text-sm font-semibold text-center hover:bg-yellow-400 active:scale-[0.98] transition-all duration-150 whitespace-nowrap"
-            >
-                + Create New User
-            </Link>
+                <input
+                    type="text"
+                    placeholder="Search users..."
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    className="flex-1 px-4 py-2.5 rounded-lg border border-gray-600 bg-gray-800 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition"
+                />
+                <Link
+                    to="/admin/create-new-user"
+                    className="px-4 py-2.5 rounded-lg bg-yellow-500 text-gray-900 text-sm font-semibold text-center hover:bg-yellow-400 active:scale-[0.98] transition-all duration-150 whitespace-nowrap"
+                >
+                    + Create New User
+                </Link>
             </div>
 
             {/* Users List */}
