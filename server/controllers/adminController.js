@@ -89,7 +89,7 @@ export const refreshToken = async (req, res) => {
     // console.log("admin token oooooo", token)
 
     if (!token) {
-        return res.sendStatus(401);
+        return res.status(401).json({message: "session expired, please login"});
     }
 
     try {
@@ -335,7 +335,7 @@ export const deleteUser = async (req, res)=>{
     try {
         const { userId } = req.params;
 
-        const deletedUserData = await User.findByIdAndDelete(userId);
+        const deletedUserData = await User.findByIdAndUpdate(userId, {isDeleted: true});
 
         if (!deletedUserData) {
             return res.status(404).json({
@@ -355,3 +355,33 @@ export const deleteUser = async (req, res)=>{
         });
     }
 }
+
+
+
+
+export const undeleteUser = async (req, res)=>{
+    try {
+        const { userId } = req.params;
+
+        const undeletedUserData = await User.findByIdAndUpdate(userId, {isDeleted: false});
+
+        if (!undeletedUserData) {
+            return res.status(404).json({
+                message: "User not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "User deleted successfully",
+            undeletedUserData
+        });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+}
+
+

@@ -156,7 +156,7 @@ export const refreshToken = async (req, res) => {
     // console.log("token oooooo", token)
 
     if (!token) {
-        return res.sendStatus(401);
+        return res.status(401).json({message: "session expired, please login"});
     }
 
     try {

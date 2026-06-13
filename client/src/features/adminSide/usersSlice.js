@@ -41,6 +41,16 @@ export const deleteUser = createAsyncThunk(
     }
 )
 
+
+export const undeleteUser = createAsyncThunk(
+    "users/undeleteUser",
+    async (userId) => {
+        const response = await adminApi.patch(`/admin/undelete-user/${userId}`);
+        console.log("userSlice >> undeleteUser >> response:", response)
+        return response.data.undeletedUserData._id
+    }
+)
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -96,9 +106,29 @@ const userSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state, action)=>{
         console.log("userdata id, ", action.payload)
-        state.usersList = state.usersList.filter((user)=> {
-            return user._id !== action.payload
+        // state.usersList = state.usersList.filter((user)=> {
+        //     return user._id !== action.payload
+        // })
+        const index = state.usersList.findIndex((user)=>{
+            return user._id === action.payload._id
         })
+
+        if(index !== -1){
+            state.usersList[index].isDeleted = true;
+        }
+      })
+      .addCase(undeleteUser.fulfilled, (state, action)=>{
+        console.log("userdata id, ", action.payload)
+        // state.usersList = state.usersList.filter((user)=> {
+        //     return user._id !== action.payload
+        // })
+        const index = state.usersList.findIndex((user)=>{
+            return user._id === action.payload._id
+        })
+
+        if(index !== -1){
+            state.usersList[index].isDeleted = false;
+        }
       })
   },
 });

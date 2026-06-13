@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   password: String, 
   isAdmin:{ type: Boolean, default: false},
   profileImage: {type: String, default: null},
+  isDeleted: {type: Boolean, default: false}
   
 }, {timestamps: true});
 

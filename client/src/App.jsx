@@ -37,7 +37,8 @@ export default function App() {
                     user: response.data.user
                 }));
             } catch (error) {
-                console.log("user is not logged in, error in App()==> ", error);
+                console.error(error)
+                console.log("error:", error?.response?.data?.message);
             } finally {
                 dispatch(setLoading(false));
             }
@@ -52,7 +53,8 @@ export default function App() {
                     adminData: adminResponse.data.adminData
                 }));
             } catch (error) {
-                console.log("admin is not logged in, error in App()==> ", error);
+                console.error(error)
+                console.log("error:",error?.response?.data?.message);
             }finally{
                 dispatch(setAdminDashboardLoading(false));
             }

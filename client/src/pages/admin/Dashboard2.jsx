@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { adminLogout } from "../../features/auth/adminAuthSlice";
 import adminApi from "../../api/adminAxios";
-import { fetchUsers, deleteUser, setSearchTerm, setCurrentPage } from "../../features/adminSide/usersSlice";
+import { fetchUsers, deleteUser, undeleteUser,  setSearchTerm, setCurrentPage } from "../../features/adminSide/usersSlice";
 import { Link } from "react-router-dom";
 
 export default function Dashboard2() {
@@ -31,13 +31,32 @@ export default function Dashboard2() {
 
         try {
             const result = await dispatch(deleteUser(userId)).unwrap();
-            dispatch(fetchUsers(currentPage))
+            dispatch(fetchUsers({page: currentPage, search: searchTerm}))
             console.log("result from thunk:", result);
             alert("User deleted successfully !");
 
         } catch (error) {
             console.log(error);
             alert("Failed to delete user");
+        }
+    }
+
+    async function handleUnDeleteUser(userId, userName) {
+        const confirmed = window.confirm(
+            `Are you sure you want to undelete ${userName}?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const result = await dispatch(undeleteUser(userId)).unwrap();
+            dispatch(fetchUsers({page: currentPage, search: searchTerm}))
+            console.log("result from thunk:", result);
+            alert("User undeleted successfully !");
+
+        } catch (error) {
+            console.log(error);
+            alert("Failed to undelete user");
         }
     }
 
@@ -140,6 +159,7 @@ export default function Dashboard2() {
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-white truncate">{user.name}</p>
                             <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                            <p className="text-xs text-gray-400 truncate">status: {user.isDeleted ? <span className='text-red-500/80 font-medium'>deleted</span> : <span className='text-green-500/80 font-medium'>active</span>}</p>
                         </div>
 
                         {/* Action buttons */}
@@ -150,12 +170,23 @@ export default function Dashboard2() {
                             >
                             Edit
                             </Link>
-                            <button
-                            onClick={() => handleDeleteUser(user._id, user.name)}
-                            className="px-3 py-1.5 rounded-lg border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/10 active:scale-[0.98] transition-all duration-150"
-                            >
-                            Delete
-                            </button>
+                            {user.isDeleted ? (
+                                <button
+                                    onClick={() => handleUnDeleteUser(user._id, user.name)}
+                                    className="px-3 py-1.5 rounded-lg border border-green-500/30 text-green-400 text-xs font-medium hover:bg-green-500/10 active:scale-[0.98] transition-all duration-150"
+                                    >
+                                    Undelete
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => handleDeleteUser(user._id, user.name)}
+                                    className="px-3 py-1.5 rounded-lg border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/10 active:scale-[0.98] transition-all duration-150"
+                                    >
+                                    Delete
+                                </button>
+                            ) 
+                            
+                            }
                         </div>
                     </div>
                 ))}
