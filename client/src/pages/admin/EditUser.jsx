@@ -14,6 +14,7 @@ export default function EditUser() {
         register,
         handleSubmit,
         reset,
+        watch,
         formState:{errors}
     } = useForm();
 
@@ -48,6 +49,18 @@ export default function EditUser() {
         setProfileImage(null);
         setImageDeleted(true);
     }
+
+    const newProfileImage = watch ("profileImage")
+    const [previewNewProfileImage, setPreviewNewProfileImage] = useState(null)
+
+    useEffect(()=>{
+        if(newProfileImage?.[0]){
+            const imageUrl = URL.createObjectURL(newProfileImage[0]);
+            setPreviewNewProfileImage(imageUrl);
+
+            return()=> URL.revokeObjectURL(imageUrl)
+        }
+    }, [newProfileImage])
 
     async function onSubmit(data) {
         console.log("data ==", data)
@@ -142,14 +155,34 @@ export default function EditUser() {
                         </button>
                     </div>
                     ) : (
-                    <div className="p-4 rounded-lg border border-dashed border-gray-600 bg-gray-700/30">
-                        <input
-                        type="file"
-                        accept="image/*"
-                        {...register("profileImage")}
-                        className="w-full text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-yellow-500/30 file:text-xs file:font-medium file:text-yellow-400 file:bg-transparent hover:file:bg-yellow-500/10 transition"
-                        />
-                    </div>
+                        previewNewProfileImage ?
+                        (
+                            <div className="flex flex-col items-center gap-3 p-4 rounded-lg border border-gray-600 bg-gray-700/50">
+                                <img
+                                src={previewNewProfileImage}
+                                alt="Profile"
+                                className="w-24 h-24 rounded-full object-cover border-4 border-gray-600"
+                                />
+                                <button
+                                type="button"
+                                onClick={()=> setPreviewNewProfileImage(null)}
+                                className="px-4 py-1.5 rounded-lg border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/10 active:scale-[0.98] transition-all duration-150"
+                                >
+                                Delete Image
+                                </button>
+                            </div>
+                        )
+                        :
+                        (
+                            <div className="p-4 rounded-lg border border-dashed border-gray-600 bg-gray-700/30">
+                                <input
+                                type="file"
+                                accept="image/*"
+                                {...register("profileImage")}
+                                className="w-full text-sm text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-yellow-500/30 file:text-xs file:font-medium file:text-yellow-400 file:bg-transparent hover:file:bg-yellow-500/10 transition"
+                                />
+                            </div>
+                        )
                     )}
                 </div>
 
