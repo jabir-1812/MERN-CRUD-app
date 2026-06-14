@@ -1,10 +1,9 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-export default function PublicRoute({ children }) {
+export default function PublicRoute() {
 
-    const { adminAccessToken, adminDashboardLoading } =
-        useSelector((state) => state.adminAuth);
+    const { adminAccessToken, adminDashboardLoading } = useSelector((state) => state.adminAuth);
 
     if (adminDashboardLoading) {
         return <h1>Loading...</h1>;
@@ -12,5 +11,5 @@ export default function PublicRoute({ children }) {
 
     return adminAccessToken
         ? <Navigate to="/admin/dashboard" replace />
-        : children;
+        : <Outlet/>;
 }
