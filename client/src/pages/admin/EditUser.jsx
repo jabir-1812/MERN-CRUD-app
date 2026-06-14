@@ -62,19 +62,7 @@ export default function EditUser() {
 
         formData.append("imageDeleted", imageDeleted);
 
-        // try {
-        //     await adminApi.put(`/admin/edit-user/${userId}`, formData, {
-        //         headers: {
-        //             "Content-Type": "multipart/form-data",
-        //         },
-        //     });
-
-        //     alert("User updated");
-        //     navigate('/admin/dashboard')
-            
-        // } catch (error) {
-        //     console.log(error);
-        // }
+        
         console.log("edit user ==>", [...formData.entries()])
         try {
             const result = await dispatch(updateUser({formData, userId})).unwrap();

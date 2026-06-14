@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import api from '../../api/axios';
@@ -7,10 +7,12 @@ import { useNavigate, Link } from 'react-router-dom';
 
 export default function EditProfile() {
     const userData = useSelector((state) => state.auth.user);
+    console.log("userData==", userData)
 
     const {
         register,
         handleSubmit,
+        watch,
         formState: { errors }
     } = useForm({
         defaultValues: {
@@ -32,6 +34,17 @@ export default function EditProfile() {
         setProfileImage(null);
         setImageDeleted(true);
     }
+
+    const newProfileImage = watch("profileImage")
+    const [previewNewProfileImage, setPreviewNewProfileImage] = useState(null)
+    
+    useEffect(()=>{
+        if(newProfileImage?.[0]){
+            const imageUrl = URL.createObjectURL(newProfileImage[0]);
+            setPreviewNewProfileImage(imageUrl);
+            return()=> URL.revokeObjectURL(imageUrl)
+        }
+    },[newProfileImage])
 
     async function onSubmit(data) {
         try {
@@ -99,17 +112,38 @@ export default function EditProfile() {
                         </button>
                     </>
                     ) : (
-                    <div className="w-full">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Profile Image
-                        </label>
-                        <input
-                        type="file"
-                        accept="image/*"
-                        {...register("profileImage")}
-                        className="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-indigo-200 file:text-xs file:font-medium file:text-indigo-600 file:bg-white hover:file:bg-indigo-50 transition"
-                        />
-                    </div>
+                        previewNewProfileImage ?
+                        (
+                            <div className="flex flex-col items-center gap-3 p-4 rounded-lg ">
+                                <img
+                                    src={previewNewProfileImage}
+                                    alt="Preview"
+                                    className="w-24 h-24 rounded-full object-cover border-4 border-indigo-100 shadow-sm"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={()=>{setPreviewNewProfileImage(null)}}
+                                    className="px-4 py-1.5 rounded-lg border border-red-500/30 text-red-400 text-xs font-medium hover:bg-red-500/10 active:scale-[0.98] transition-all duration-150"
+                                >
+                                    Delete Image
+                                </button>
+                            </div>
+                        )
+                        :
+                        (
+                            <div className="w-full">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Profile Image
+                                </label>
+                                <input
+                                type="file"
+                                accept="image/*"
+                                {...register("profileImage")}
+                                className="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border file:border-indigo-200 file:text-xs file:font-medium file:text-indigo-600 file:bg-white hover:file:bg-indigo-50 transition"
+                                />
+                            </div>
+                        )
+                    
                     )}
                 </div>
 
