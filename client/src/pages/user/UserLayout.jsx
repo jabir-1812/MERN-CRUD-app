@@ -9,6 +9,7 @@ export default function UserLayout() {
 
     useEffect(() => {
         const verifyLogin = async () => {
+            console.log("verify login running...")
             try {
                 const response = await api.post('/user/refresh-token');
                 // console.log("response data", response.data)

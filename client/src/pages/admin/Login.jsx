@@ -5,6 +5,7 @@ import adminApi from '../../api/adminAxios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAdminCredentials } from '../../features/auth/adminAuthSlice';
 import { useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const EyeIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -43,14 +44,19 @@ export default function Login() {
                 adminAccessToken: response.data.adminAccessToken,
                 adminData: response.data.adminData
             }));
+            
+
+            toast.success("Login success")
 
             navigate("/admin/dashboard", { replace: true });
 
         } catch (error) {
             if (error.response) {
                 setFormSubmissionError(error.response.data.message);
+                toast.error(error.response.data.message)
             } else {
                 console.log("error in |admin/Login.jsx|=>", error);
+                toast.error("internal error: ", error)
             }
         }
     }

@@ -107,6 +107,13 @@ export const loginUser = async (req, res)=>{
             });
         }
 
+        if(user.isDeleted){
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({
+                success: false,
+                message: "Account is blocked"
+            })
+        }
+
         
 
         const accessToken = jwt.sign(
@@ -167,6 +174,11 @@ export const refreshToken = async (req, res) => {
         );
 
         const userData = await User.findById(decoded.userId).select("-password")
+
+        if(userData.isDeleted){
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({message: "Account is blocked"})
+        }
+        
         const accessToken = jwt.sign(
             {
                 userId: decoded.userId,

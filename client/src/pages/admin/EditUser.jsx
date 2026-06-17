@@ -5,6 +5,7 @@ import adminApi from "../../api/adminAxios";
 import { useNavigate, Link } from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {updateUser} from '../../features/adminSide/usersSlice'
+import toast from "react-hot-toast";
 
 export default function EditUser() {
     const { userId } = useParams();
@@ -80,6 +81,7 @@ export default function EditUser() {
         try {
             const result = await dispatch(updateUser({formData, userId})).unwrap();
             console.log("result form the thunk:", result)
+            toast.success("success")
             navigate("/admin/dashboard");
 
         } catch (error) {

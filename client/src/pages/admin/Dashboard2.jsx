@@ -4,6 +4,7 @@ import { adminLogout } from "../../features/auth/adminAuthSlice";
 import adminApi from "../../api/adminAxios";
 import { fetchUsers, deleteUser, undeleteUser,  setSearchTerm, setCurrentPage } from "../../features/adminSide/usersSlice";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast"
 
 export default function Dashboard2() {
     const {adminData,  adminDashboardLoading } = useSelector((state)=> state.adminAuth)
@@ -15,6 +16,7 @@ export default function Dashboard2() {
         try {
             await adminApi.post("/admin/logout");
             dispatch(adminLogout());
+            toast.success("Logged out successfully")
         } catch (error) {
             console.log(error)
         }
@@ -33,7 +35,8 @@ export default function Dashboard2() {
             const result = await dispatch(deleteUser(userId)).unwrap();
             dispatch(fetchUsers({page: currentPage, search: searchTerm}))
             console.log("result from thunk:", result);
-            alert("User deleted successfully !");
+            // alert("User deleted successfully !");
+            toast.success("User deleted successfully")
 
         } catch (error) {
             console.log(error);
@@ -52,7 +55,8 @@ export default function Dashboard2() {
             const result = await dispatch(undeleteUser(userId)).unwrap();
             dispatch(fetchUsers({page: currentPage, search: searchTerm}))
             console.log("result from thunk:", result);
-            alert("User undeleted successfully !");
+            // alert("User undeleted successfully !");
+            toast.success("User undeleted successfully")
 
         } catch (error) {
             console.log(error);

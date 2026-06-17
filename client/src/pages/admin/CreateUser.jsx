@@ -4,6 +4,7 @@ import adminApi from "../../api/adminAxios";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../features/adminSide/usersSlice"
+import toast from "react-hot-toast";
 
 const EyeIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
@@ -65,6 +66,7 @@ export default function CreateUser() {
 
             const result = await dispatch(addUser(formData)).unwrap();
             console.log("result from the thunk:", result)
+            toast.success("User creation succes")
             navigate("/admin/dashboard");
 
 

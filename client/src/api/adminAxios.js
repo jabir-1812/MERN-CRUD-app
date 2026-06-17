@@ -26,11 +26,14 @@ adminApi.interceptors.response.use(
 
     async (error) => {
         const originalRequest = error.config;
+        const accessToken = store.getState().adminAuth.adminAccessToken;
 
         if (
             error.response?.status === 401 &&
             originalRequest &&
+            accessToken &&
             !originalRequest._retry &&
+            !originalRequest.url.includes('/admin/login') &&
             !originalRequest.url.includes('/admin/refresh-token')
         ) {
             originalRequest._retry = true;

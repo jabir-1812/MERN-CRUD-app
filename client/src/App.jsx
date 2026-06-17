@@ -5,6 +5,7 @@ import { setCredentials, setLoading } from "./features/auth/authSlice";
 import api from "./api/axios";
 import adminApi from "./api/adminAxios";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Index from "./pages/Index";
 import UserLayout from "./pages/user/UserLayout";
@@ -28,6 +29,8 @@ import CreateUserPage from "./pages/admin/CreateUser";
 
 export default function App() {
     return (
+        <>
+        <Toaster />
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Index />}></Route>
@@ -69,5 +72,6 @@ export default function App() {
                 <Route path="*" element={<NotFound />} ></Route>
             </Routes>
         </BrowserRouter>
+        </>
     );
 }

@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { STATUS_CODES } from "../../shared/statusCodes.js";
+import User from "../models/User.js";
 
-export const verifyUser = (req, res, next) => {
+export const verifyUser = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
 
@@ -18,6 +19,14 @@ export const verifyUser = (req, res, next) => {
             userAccessToken,
             process.env.JWT_ACCESS_TOKEN_SECRET
         );
+
+        const user = await User.findById(decoded.userId)
+        if(user.isDeleted){
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({
+                success: false,
+                message: "Account is blocked"
+            })
+        }
 
         req.user = decoded;
 
